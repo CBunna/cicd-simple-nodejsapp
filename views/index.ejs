@@ -1,0 +1,52 @@
+<div class="hero">
+    <h1><%= title %></h1>
+    <p>A simple Node.js application for DevOps practice</p>
+    <p class="version">Version: <%= version %> | Environment: <%= environment %></p>
+</div>
+
+<div class="features">
+    <h2>Features for DevOps Practice</h2>
+    <div class="feature-grid">
+        <div class="feature-card">
+            <h3>🏥 Health Checks</h3>
+            <p>Built-in health check endpoint for monitoring</p>
+            <a href="/health" class="btn">Check Health</a>
+        </div>
+        
+        <div class="feature-card">
+            <h3>📊 Metrics</h3>
+            <p>Basic metrics endpoint for monitoring</p>
+            <a href="/metrics" class="btn">View Metrics</a>
+        </div>
+        
+        <div class="feature-card">
+            <h3>🔌 API</h3>
+            <p>RESTful API endpoints for testing</p>
+            <a href="/api/info" class="btn">API Info</a>
+        </div>
+        
+        <div class="feature-card">
+            <h3>📦 Container Ready</h3>
+            <p>Optimized for containerization</p>
+            <button class="btn" onclick="showDockerInfo()">Docker Info</button>
+        </div>
+    </div>
+</div>
+
+<div class="info-section">
+    <h2>Application Info</h2>
+    <div class="info-grid">
+        <div class="info-item">
+            <strong>Timestamp:</strong> <%= timestamp %>
+        </div>
+        <div class="info-item">
+            <strong>Node Version:</strong> <span id="nodeVersion">Loading...</span>
+        </div>
+        <div class="info-item">
+            <strong>Platform:</strong> <span id="platform">Loading...</span>
+        </div>
+        <div class="info-item">
+            <strong>Uptime:</strong> <span id="uptime">Loading...</span>
+        </div>
+    </div>
+</div>

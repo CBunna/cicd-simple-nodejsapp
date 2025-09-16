@@ -1,0 +1,509 @@
+<% layout('layout') -%>
+
+<div class="health-container">
+    <div class="health-header">
+        <h1>🏥 System Health Check</h1>
+        <div class="status-indicator <%= status === 'healthy' ? 'healthy' : 'unhealthy' %>">
+            <span class="status-icon">
+                <%= status === 'healthy' ? '✅' : '❌' %>
+            </span>
+            <span class="status-text">
+                <%= status === 'healthy' ? 'HEALTHY' : 'UNHEALTHY' %>
+            </span>
+        </div>
+    </div>
+
+    <div class="health-info-grid">
+        <!-- Application Info -->
+        <div class="health-card">
+            <h3>📱 Application</h3>
+            <div class="info-list">
+                <div class="info-item">
+                    <strong>Status:</strong>
+                    <span class="<%= status === 'healthy' ? 'text-success' : 'text-danger' %>">
+                        <%= status %>
+                    </span>
+                </div>
+                <div class="info-item">
+                    <strong>Version:</strong>
+                    <span><%= version %></span>
+                </div>
+                <div class="info-item">
+                    <strong>Environment:</strong>
+                    <span class="env-badge env-<%= environment %>"><%= environment %></span>
+                </div>
+                <div class="info-item">
+                    <strong>Uptime:</strong>
+                    <span id="uptime-display"><%= Math.floor(uptime / 3600) %>h <%= Math.floor((uptime % 3600) / 60) %>m <%= Math.floor(uptime % 60) %>s</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Information -->
+        <div class="health-card">
+            <h3>💻 System</h3>
+            <div class="info-list">
+                <div class="info-item">
+                    <strong>Platform:</strong>
+                    <span><%= system.platform %></span>
+                </div>
+                <div class="info-item">
+                    <strong>Architecture:</strong>
+                    <span><%= system.arch %></span>
+                </div>
+                <div class="info-item">
+                    <strong>Node.js:</strong>
+                    <span><%= system.nodeVersion %></span>
+                </div>
+                <div class="info-item">
+                    <strong>Memory Used:</strong>
+                    <span><%= system.memory.used %></span>
+                </div>
+                <div class="info-item">
+                    <strong>Total Memory:</strong>
+                    <span><%= system.memory.total %></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timestamps -->
+        <div class="health-card">
+            <h3>⏰ Timestamps</h3>
+            <div class="info-list">
+                <div class="info-item">
+                    <strong>Current Time:</strong>
+                    <span id="current-time"><%= timestamp %></span>
+                </div>
+                <div class="info-item">
+                    <strong>Last Check:</strong>
+                    <span id="last-check"><%= timestamp %></span>
+                </div>
+                <div class="info-item">
+                    <strong>Timezone:</strong>
+                    <span><%= new Date().toTimeString().split(' ')[1] %></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Endpoints -->
+        <div class="health-card">
+            <h3>🔗 API Endpoints</h3>
+            <div class="endpoint-list">
+                <div class="endpoint-item">
+                    <code>GET /health</code>
+                    <span class="endpoint-status healthy">✅ Active</span>
+                </div>
+                <div class="endpoint-item">
+                    <code>GET /metrics</code>
+                    <span class="endpoint-status healthy">✅ Active</span>
+                </div>
+                <div class="endpoint-item">
+                    <code>GET /api/info</code>
+                    <span class="endpoint-status healthy">✅ Active</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="health-actions">
+        <button onclick="refreshHealth()" class="btn btn-primary">
+            🔄 Refresh Health Data
+        </button>
+        <button onclick="downloadHealthReport()" class="btn btn-secondary">
+            📊 Download Report
+        </button>
+        <a href="/metrics" class="btn btn-info">
+            📈 View Metrics
+        </a>
+        <a href="/api/info" class="btn btn-info">
+            ℹ️ API Info
+        </a>
+    </div>
+
+    <!-- Real-time Updates -->
+    <div class="health-footer">
+        <p>
+            <small>
+                Auto-refresh: <span id="auto-refresh-status">Enabled</span> |
+                Last updated: <span id="last-updated"><%= new Date().toLocaleString() %></span>
+            </small>
+        </p>
+        <div class="toggle-container">
+            <label class="toggle-switch">
+                <input type="checkbox" id="auto-refresh-toggle" checked>
+                <span class="slider"></span>
+            </label>
+            <span>Auto-refresh every 30s</span>
+        </div>
+    </div>
+</div>
+
+<style>
+.health-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.health-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.health-header h1 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.status-indicator.healthy {
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    color: white;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+}
+
+.status-indicator.unhealthy {
+    background: linear-gradient(135deg, #f87171, #ef4444);
+    color: white;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.health-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.health-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.health-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -1px rgba(0, 0, 0, 0.15);
+}
+
+.health-card h3 {
+    color: #374151;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.text-success {
+    color: #059669;
+    font-weight: 600;
+}
+
+.text-danger {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.env-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.env-development {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.env-staging {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.env-production {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.endpoint-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.endpoint-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+}
+
+.endpoint-item code {
+    background: #374151;
+    color: #f9fafb;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', monospace;
+}
+
+.endpoint-status.healthy {
+    color: #059669;
+    font-weight: 600;
+}
+
+.health-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    color: white;
+}
+
+.btn-info {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.health-footer {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+    color: #6b7280;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #3b82f6;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+@media (max-width: 768px) {
+    .health-info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .health-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+</style>
+
+<script>
+let autoRefreshInterval;
+let isAutoRefreshEnabled = true;
+
+// Auto-refresh functionality
+function setupAutoRefresh() {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+    }
+    
+    if (isAutoRefreshEnabled) {
+        autoRefreshInterval = setInterval(refreshHealth, 30000);
+        document.getElementById('auto-refresh-status').textContent = 'Enabled';
+    } else {
+        document.getElementById('auto-refresh-status').textContent = 'Disabled';
+    }
+}
+
+// Refresh health data
+async function refreshHealth() {
+    try {
+        const response = await fetch('/health');
+        const data = await response.json();
+        
+        // Update uptime display
+        const uptimeDisplay = document.getElementById('uptime-display');
+        if (uptimeDisplay && data.uptime) {
+            const hours = Math.floor(data.uptime / 3600);
+            const minutes = Math.floor((data.uptime % 3600) / 60);
+            const seconds = Math.floor(data.uptime % 60);
+            uptimeDisplay.textContent = `${hours}h ${minutes}m ${seconds}s`;
+        }
+        
+        // Update timestamps
+        const currentTime = document.getElementById('current-time');
+        const lastCheck = document.getElementById('last-check');
+        const lastUpdated = document.getElementById('last-updated');
+        
+        if (currentTime) currentTime.textContent = data.timestamp;
+        if (lastCheck) lastCheck.textContent = data.timestamp;
+        if (lastUpdated) lastUpdated.textContent = new Date().toLocaleString();
+        
+        console.log('Health data refreshed successfully');
+    } catch (error) {
+        console.error('Failed to refresh health data:', error);
+    }
+}
+
+// Download health report
+async function downloadHealthReport() {
+    try {
+        const response = await fetch('/health');
+        const data = await response.json();
+        
+        const report = {
+            generatedAt: new Date().toISOString(),
+            ...data
+        };
+        
+        const blob = new Blob([JSON.stringify(report, null, 2)], {
+            type: 'application/json'
+        });
+        
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `health-report-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Failed to download health report:', error);
+        alert('Failed to download health report. Please try again.');
+    }
+}
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    // Setup auto-refresh toggle
+    const toggleSwitch = document.getElementById('auto-refresh-toggle');
+    if (toggleSwitch) {
+        toggleSwitch.addEventListener('change', function() {
+            isAutoRefreshEnabled = this.checked;
+            setupAutoRefresh();
+        });
+    }
+    
+    // Start auto-refresh
+    setupAutoRefresh();
+    
+    // Initial refresh after 5 seconds
+    setTimeout(refreshHealth, 5000);
+});
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', function() {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+    }
+});
+</script>
