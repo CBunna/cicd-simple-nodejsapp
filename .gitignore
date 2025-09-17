@@ -50,7 +50,3 @@ build/
 # Docker
 .dockerignore
 
-Dockerfile.dev
-Dockerfile.prod
-docker-compose.dev.yaml
-docker-compose.prod.yaml
