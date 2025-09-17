@@ -1,0 +1,44 @@
+name: NodeJS CICD
+
+on:
+  push:
+    branches: [main, docker, feature/github-action]
+  pull_request:
+    branches: [main]
+jobs:
+  # jobs name
+  test:
+    # which os that job will be run
+    runs-on: ubuntu-latest
+    # STEPS
+    steps:
+      # pull the code fron repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up node js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Linter
+      - name: Run Linter
+        run: npm run lint
+
+      # test - JEST
+      - name: Run test
+        run: npm run test
+
+      # Start server and health check
+      - name: Start server and health check
+        run: |
+          npm start &
+          sleep 5
+          npm run health-check
+          pkill -f "node src/app.js" || true
