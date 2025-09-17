@@ -24,11 +24,11 @@ function formatUptime(seconds) {
     return `${hours}h ${minutes}m ${secs}s`;
 }
 
-function showDockerInfo() {
+window.showDockerInfo = function() {
     alert(`Docker Info:
-    
+
 🐳 This app is ready for containerization!
-    
+
 Key features:
 - Health check endpoint: /health
 - Metrics endpoint: /metrics
@@ -38,7 +38,7 @@ Key features:
 - Environment configuration
 
 Check the Dockerfile and docker-compose.yml files!`);
-}
+};
 
 // Auto-refresh system info every 30 seconds
 setInterval(loadSystemInfo, 30000);
