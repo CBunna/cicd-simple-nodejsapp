@@ -2,7 +2,7 @@ name: NodeJS CICD
 
 on:
   push:
-    branches: [main, docker]
+    branches: [main, docker, feature/github-action]
   pull_request:
     branches: [main]
 jobs:
