@@ -14,11 +14,14 @@ jobs:
     steps:
       # pull the code fron repo
       - name: Checkout code
-        uses: actions/checkout@4
+        uses: actions/checkout@v4
 
       # Set up node js
       - name: Setup Node.js
         uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
 
       # Install dependencies
       - name: Install dependencies
