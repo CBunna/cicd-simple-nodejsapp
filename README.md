@@ -4,13 +4,11 @@ A simple Node.js web application designed for DevOps practice, including contain
 
 ## Features
 
-- 🏥 Health check endpoints
-- 📊 Basic metrics endpoint
-- 🔧 RESTful API
-- 📦 Container-ready
-- 🚀 CI/CD ready
-- 📝 Comprehensive logging
-- ⚡ Graceful shutdowns
+-  Health check endpoints
+-  Basic metrics endpoint
+-  RESTful API
+-  Container-ready
+-  CI/CD ready
 
 ## Quick Start
 
@@ -48,11 +46,11 @@ This app is designed for learning DevOps practices including:
 
 See the DevOps section below for container and deployment examples.
 
+## Personal Learning note.
 
-
-Here's the essential information
-   you'll need for creating Dockerfile, GitHub Actions, and Kubernetes
-  configurations:
+ Here's the essential information
+ you'll need for creating Dockerfile, GitHub Actions, and Kubernetes
+ configurations:
 
   Application Overview
 
