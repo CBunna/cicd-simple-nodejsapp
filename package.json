@@ -6,8 +6,8 @@
     "scripts": {
         "start": "node src/app.js",
         "dev": "nodemon src/app.js",
-        "test": "jest",
-        "test:watch": "jest --watch",
+        "test": "NODE_ENV=test jest",
+        "test:watch": "NODE_ENV=test jest --watch",
         "lint": "eslint src/",
         "health-check": "curl -f http://localhost:3000/health || exit 1"
     },
