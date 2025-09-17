@@ -1,3 +1,5 @@
+[![NodeJS CICD](https://github.com/CBunna/cicd-simple-nodejsapp/actions/workflows/cicd.yml/badge.svg)](https://github.com/CBunna/cicd-simple-nodejsapp/actions/workflows/cicd.yml)
+
 # DevOps Practice App
 
 A simple Node.js web application designed for DevOps practice, including containerization, CI/CD, and monitoring.
