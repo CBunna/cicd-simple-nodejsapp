@@ -35,6 +35,10 @@ jobs:
       - name: Run test
         run: npm run test
 
-      # Health CHeck
-      - name: Health check
-        run: npm run health-check
+      # Start server and health check
+      - name: Start server and health check
+        run: |
+          npm start &
+          sleep 5
+          npm run health-check
+          pkill -f "node src/app.js" || true
