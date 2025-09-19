@@ -42,3 +42,31 @@ jobs:
           sleep 5
           npm run health-check
           pkill -f "node src/app.js" || true
+
+  # This job ensures your project's dependencies don't have known security vulnerabilities before deployment, acting as an automated security gate in your CI/CD pipeline.
+  security:
+    # Runs on the latest Ubuntu virtual machine
+    runs-on: ubuntu-latest
+    # need test job
+    needs:
+      test
+      # Steps
+    steps:
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+        # Setup Nodejs
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+        # Install Dependencies
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Security audit
+        run: npm audit --audit-level moderate
+
+    # Run Security audit

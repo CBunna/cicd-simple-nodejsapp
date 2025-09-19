@@ -6,6 +6,7 @@
     "scripts": {
         "start": "node src/app.js",
         "dev": "nodemon src/app.js",
+        "build": "mkdir -p dist && cp -r src dist/ && cp package*.json dist/",
         "test": "NODE_ENV=test jest",
         "test:watch": "NODE_ENV=test jest --watch",
         "lint": "eslint src/",
